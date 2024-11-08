@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:essentialgear_mobile/menu.dart';
+import 'package:essentialgear_mobile/screens/menu.dart';
 
 
 void main() {
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Flutter Tugas',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSwatch().copyWith(
           primary: const Color.fromRGBO(0, 0, 0, 1),
-          secondary: Colors.deepPurple[400]
+          secondary: const Color.fromARGB(255, 0,0, 0)
         ),
         useMaterial3: true,
       ),
@@ -40,5 +40,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-
