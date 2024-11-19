@@ -1,108 +1,185 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-class GearEntryFormPage extends StatefulWidget {
-  const GearEntryFormPage({super.key});
+import 'package:essentialgear_mobile/screens/menu.dart';
+import 'package:flutter/material.dart';
+import 'package:essentialgear_mobile/widgets/left_drawer.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
+
+class ProductEntryFormPage extends StatefulWidget {
+  const ProductEntryFormPage({super.key});
 
   @override
-  State<GearEntryFormPage> createState() => _GearEntryFormPageState();
+  State<ProductEntryFormPage> createState() => _ProductEntryFormPageState();
 }
 
-class _GearEntryFormPageState extends State<GearEntryFormPage> {
+class _ProductEntryFormPageState extends State<ProductEntryFormPage> {
   final _formKey = GlobalKey<FormState>();
-  String _namegear = "";
-  String _serigear = "";
-  int _stock = 0;
+  String _name = "";
+  int _price = 0;
+  String _description = "";
+  String _shade = "";
+  String _size = "";
 
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Center(
           child: Text(
-            'Form Pembelian EssentialGear',
+            'Form Tambah Product Hari ini',
           ),
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
       ),
+      drawer: const LeftDrawer(),
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Name Field
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
                   decoration: InputDecoration(
-                    hintText: "Gear",
-                    labelText: "Gear",
+                    hintText: "Name",
+                    labelText: "Name",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                   ),
+                  maxLength: 255,
                   onChanged: (String? value) {
                     setState(() {
-                      _namegear = value!;
+                      _name = value!;
                     });
                   },
                   validator: (String? value) {
                     if (value == null || value.isEmpty) {
-                      return "Nama Gear tidak boleh kosong!";
+                      return "Name tidak boleh kosong!";
                     }
                     return null;
                   },
                 ),
               ),
+
+              // Price Field
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
                   decoration: InputDecoration(
-                    hintText: "Deskripsi",
-                    labelText: "Deskripsi",
+                    hintText: "Price",
+                    labelText: "Price",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                   ),
+                  keyboardType: TextInputType.number,
                   onChanged: (String? value) {
                     setState(() {
-                      _serigear = value!;
+                      _price = int.tryParse(value!) ?? 0;
                     });
                   },
                   validator: (String? value) {
                     if (value == null || value.isEmpty) {
-                      return "Deskripsi tidak boleh kosong!";
+                      return "Price tidak boleh kosong!";
+                    }
+                    final parsedValue = int.tryParse(value);
+                    if (parsedValue == null) {
+                      return "Price harus berupa angka!";
+                    }
+                    if (parsedValue < 1) {
+                      return 'Price must be at least 1';
                     }
                     return null;
                   },
                 ),
               ),
+
+              // Description Field
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
                   decoration: InputDecoration(
-                    hintText: "Stock",
-                    labelText: "Stock",
+                    hintText: "Description",
+                    labelText: "Description",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                   ),
+                  maxLength: 255,
                   onChanged: (String? value) {
                     setState(() {
-                      _stock = int.tryParse(value!) ?? 0;
+                      _description = value!;
                     });
                   },
                   validator: (String? value) {
                     if (value == null || value.isEmpty) {
-                      return "Stock Gear tidak boleh kosong!";
-                    }
-                    if (int.tryParse(value) == null) {
-                      return "Stock Gear harus berupa angka!";
+                      return "Description tidak boleh kosong!";
                     }
                     return null;
                   },
                 ),
               ),
+
+              // Shade Field
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    hintText: "Shade",
+                    labelText: "Shade",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                  maxLength: 255,
+                  onChanged: (String? value) {
+                    setState(() {
+                      _shade = value!;
+                    });
+                  },
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return "Shade tidak boleh kosong!";
+                    }
+                    return null;
+                  },
+                ),
+              ),
+
+              // Size Field
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    hintText: "Size",
+                    labelText: "Size",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                  maxLength: 255,
+                  onChanged: (String? value) {
+                    setState(() {
+                      _size = value!;
+                    });
+                  },
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return "Size tidak boleh kosong!";
+                    }
+                    return null;
+                  },
+                ),
+              ),
+
+              // Save Button
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
@@ -110,37 +187,42 @@ class _GearEntryFormPageState extends State<GearEntryFormPage> {
                   child: ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(
-                          Theme.of(context).colorScheme.primary),
+                        Theme.of(context).colorScheme.primary,
+                      ),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: const Text('Gear berhasil tersimpan'),
-                              content: SingleChildScrollView(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Gear: $_namegear'),
-                                    Text('Description: $_serigear'),
-                                    Text('Stock Gear: $_stock'),
-                                  ],
-                                ),
-                              ),
-                              actions: [
-                                TextButton(
-                                  child: const Text('OK'),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    _formKey.currentState!.reset();
-                                  },
-                                ),
-                              ],
-                            );
-                          },
+                        // Send the data to the server
+                        final response = await request.postJson(
+                          "http://127.0.0.1:8000/create-flutter/",
+                          jsonEncode(<String, dynamic>{
+                            'name': _name,
+                            'price': _price.toString(),
+                            'description': _description,
+                            'shade': _shade,
+                            'size': _size,
+                          }),
                         );
+
+                        if (context.mounted) {
+                          if (response['status'] == 'success') {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                              content: Text("Produk baru berhasil disimpan!"),
+                            ));
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MyHomePage()),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                              content: Text(
+                                  "Terdapat kesalahan, silakan coba lagi."),
+                            ));
+                          }
+                        }
                       }
                     },
                     child: const Text(

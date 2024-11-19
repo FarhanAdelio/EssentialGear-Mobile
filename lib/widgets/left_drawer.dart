@@ -1,3 +1,4 @@
+import 'package:essentialgear_mobile/screens/list_productentry.dart';
 import 'package:flutter/material.dart';
 import 'package:essentialgear_mobile/screens/menu.dart';
 import 'package:essentialgear_mobile/screens/gearentry_form.dart';
@@ -17,7 +18,7 @@ class LeftDrawer extends StatelessWidget {
             child: const Column(
               children: [
                 Text(
-                  'EssentilaGear',
+                  'Beauty Hive',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 24,
@@ -27,7 +28,7 @@ class LeftDrawer extends StatelessWidget {
                 ),
                 Padding(padding: EdgeInsets.all(8)),
                 Text(
-                  "Tambahkan Gear di EssentialGear",
+                  "Add your EssentialGear!",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 15,
@@ -38,28 +39,41 @@ class LeftDrawer extends StatelessWidget {
               ],
             ),
           ),
+          // ListTile untuk Halaman Utama
           ListTile(
             leading: const Icon(Icons.home_outlined),
             title: const Text('Halaman Utama'),
-            // Bagian redirection ke MyHomePage
             onTap: () {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MyHomePage(),
-                  ));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MyHomePage(),
+                ),
+              );
+            },
+          ),
+
+          ListTile(
+            leading: const Icon(Icons.add),
+            title: const Text('Tambah Produk'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProductEntryFormPage(),
+                ),
+              );
             },
           ),
           ListTile(
-            leading: const Icon(Icons.get_app_rounded),
-            title: const Text('Tambah Gear'),
-            // Bagian redirection ke MoodEntryFormPage
+            leading: const Icon(Icons.add_reaction_rounded),
+            title: const Text('Lihat Daftar Produk'),
             onTap: () {
+              // Route menu ke halaman mood
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const GearEntryFormPage(),
-                  ));
+                context,
+                MaterialPageRoute(builder: (context) => const ProductPage()),
+              );
             },
           ),
         ],
