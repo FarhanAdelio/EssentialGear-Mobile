@@ -18,7 +18,7 @@ class LeftDrawer extends StatelessWidget {
             child: const Column(
               children: [
                 Text(
-                  'Beauty Hive',
+                  'Essentila Gear',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 24,
